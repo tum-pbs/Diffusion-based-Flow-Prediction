@@ -1,0 +1,20 @@
+attention_layers:
+- 2
+- 3
+condition_layers:
+- -2
+depth_each_layer: 2
+dim_basic: 16
+dim_condition: 3
+dim_encoded_time: 8
+dim_in: 3
+dim_multipliers:
+- 1
+- 2
+- 4
+- 4
+dim_out: 3
+heads_attention: 4
+linear_attention: false
+skip_connection_scale: 0.707
+use_input_condition: true
