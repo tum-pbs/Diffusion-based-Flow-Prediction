@@ -10,7 +10,7 @@ class TrainerSteplR(Trainer):
     def set_configs_type(self):
         super().set_configs_type()
         lr_scheduler_configs=self.configs_handler.get_config_features("lr_scheduler")
-        lr_scheduler_configs["option"]=lr_scheduler_configs["option"].append("step")
+        lr_scheduler_configs["option"].append("step")
         self.configs_handler.set_config_features("lr_scheduler",lr_scheduler_configs)
 
     def get_lr_scheduler(self,optimizer):
