@@ -1,6 +1,6 @@
 # usr/bin/python3
-# trainer from foxutils: https://github.com/qiauil/foxutils
-# version:0.0.4
+# trainer has been released separately as foxutils: https://github.com/qiauil/foxutils
+# version:0.0.6
 # last modified:20231107
 
 import os,torch,time,math,logging,yaml
@@ -10,42 +10,10 @@ from tensorboard.backend.event_processing import event_accumulator
 from torch.utils.data import DataLoader 
 #from .helper.coding import *
 #from .helper.network import *
-import copy,random
+import random
 import numpy as np
-from tqdm import tqdm
-
-# moved from foxutils.helper:
-def show_paras(model,print_result=True):
-    nn_parameters = filter(lambda p: p.requires_grad, model.parameters())
-    params = sum([np.prod(p.size()) for p in nn_parameters])
-    # crucial parameter to keep in view: how many parameters do we have?
-    if print_result:
-        print("model has {} trainable params".format(params))
-    return params
-class GeneralDataClass():
-    
-    def __init__(self,generation_dict=None,**kwargs) -> None:
-        if generation_dict is not None:
-            for key,value in generation_dict.items():
-                if isinstance(value,dict):
-                    setattr(self,key,GeneralDataClass(value))
-                else:
-                    setattr(self,key,value)
-        for key,value in kwargs.items():
-            if isinstance(value,dict):
-                setattr(self,key,GeneralDataClass(value))
-            else:
-                setattr(self,key,value)
-    
-    def __len__(self):
-        return len(self.__dict__)
-    
-    def __getitem__(self,key):
-        return self.__dict__[key]
-    
-    def __iter__(self):
-        return iter(self.__dict__.items())
-
+from tqdm import tqdm   
+from .helpers import *
 
 #NOTE: the range of the lambda output should be [0,1]                   
 def get_cosine_lambda(initial_lr,final_lr,epochs,warmup_epoch):
@@ -76,7 +44,7 @@ class Trainer():
     
     def __init__(self) -> None:
         self.set_configs_type()
-        self.__train_from_checkpoint=False
+        self._train_from_checkpoint=False
         self.configs=None
         self.project_path=""
         self.logger=None
@@ -86,47 +54,6 @@ class Trainer():
         self.start_epoch=1
         self.optimizer=None
         self.lr_scheduler=None
-
-    def __prepare_config_dict_for_inoutput(self,configs_dict,output=False):
-        '''
-        Preprocess the config dict before training or saving.
-        
-        Args:
-            configs_dict: dict, the config dict to be processed
-            save: bool, whether the config dict is for saving or training
-        '''
-        if not output:
-            configs_dict["device"]=torch.device(configs_dict["device"])
-        else:
-            configs_dict["device"]=str(configs_dict["device"])
-        return configs_dict
-            
-    def __check_configs_dict(self,configs_dict):
-        # check whether all mandatory configs are provided
-        if configs_dict["save_path"][-1]!=os.sep:
-            configs_dict["save_path"]+=os.sep
-        if configs_dict["batch_size_validation"] is None:
-            configs_dict["batch_size_validation"]=configs_dict["batch_size_train"]
-        if configs_dict["shuffle_validation"] is None:
-            configs_dict["shuffle_validation"]=configs_dict["shuffle_train"]
-        if configs_dict["num_workers_validation"] is None:
-            configs_dict["num_workers_validation"]=configs_dict["num_workers_train"]
-        if configs_dict["save_epoch"] is None:
-            configs_dict["save_epoch"]=int(configs_dict["epochs"]/10)
-        if configs_dict["final_lr"] is None:
-            configs_dict["final_lr"]=configs_dict["lr"]
-        if configs_dict["random_seed"] is None:
-            configs_dict["random_seed"]=int(time.time())
-        for key in self.mandatory_configs:
-            if key not in configs_dict.keys():
-                raise KeyError("Mandatory configuration '{}' not found in configs".format(key))
-        for key in self.configs_option.keys():
-            if configs_dict[key] not in self.configs_option[key]:
-                raise ValueError("Config '{}' should be one of {},find {}".format(key,self.configs_option[key],configs_dict[key]))
-        for key in configs_dict.keys():
-            if key not in self.mandatory_configs and key not in self.default_configs.keys():
-                print(os.linesep+"Warning: Config '{}' not supported!".format(key)+os.linesep)
-        return configs_dict
 
     def __get_logger_recorder(self):
         logger=logging.getLogger("logger_{}".format(self.configs.name))
@@ -144,7 +71,7 @@ class Trainer():
         
         return logger,recorder
 
-    def __get_optimizer(self,network):
+    def get_optimizer(self,network):
         if self.configs.optimizer=="AdamW":
             return torch.optim.AdamW(network.parameters(),lr=self.configs.lr)
         elif self.configs.optimizer=="Adam":
@@ -154,7 +81,7 @@ class Trainer():
         else:
             raise ValueError("Optimizer '{}' not supported".format(self.configs.optimizer))
 
-    def __get_lr_scheduler(self,optimizer):
+    def get_lr_scheduler(self,optimizer):
         if self.configs.lr_scheduler=="cosine":
             return torch.optim.lr_scheduler.LambdaLR(optimizer,get_cosine_lambda(initial_lr=self.configs.lr,final_lr=self.configs.final_lr,epochs=self.configs.epochs,warmup_epoch=self.configs.warmup_epoch))
         elif self.configs.lr_scheduler=="linear":
@@ -175,7 +102,7 @@ class Trainer():
         dataloader_genrator.manual_seed(self.configs.random_seed)
         # create project folder
         time_label = time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime(time.time()))
-        if not self.__train_from_checkpoint:
+        if not self._train_from_checkpoint:
             self.project_path=self.configs.save_path+self.configs.name+os.sep+time_label+os.sep
             os.makedirs(self.project_path, exist_ok=True)
         self.records_path=self.project_path+"records"+os.sep
@@ -184,14 +111,13 @@ class Trainer():
         #get logger and recorder
         self.logger,self.recorder=self.__get_logger_recorder()
         self.logger.info("Trainer created at {}".format(time_label))
-        if self.__train_from_checkpoint:
+        if self._train_from_checkpoint:
             self.logger.info("Training from checkpoint, checkpoint epoch:{}".format(self.start_epoch))
         self.logger.info("Working path:{}".format(self.project_path))
         self.logger.info("Random seed: {}".format(self.configs.random_seed))      
         # save configs if not train from checkpoint
-        if not self.__train_from_checkpoint:
-            with open(self.project_path+"configs.yaml","w") as f:
-                yaml.dump(self.__prepare_config_dict_for_inoutput(self.configs.__dict__,output=True),f)
+        if not self._train_from_checkpoint:
+            self.configs_handler.save_config_items_to_yaml(self.project_path+"configs.yaml")
         self.logger.info("Training configurations saved to {}".format(self.project_path+"configs.yaml"))
         # show model paras and save model structure
         self.logger.info("Network has {} trainable parameters".format(show_paras(network,print_result=False)))
@@ -221,14 +147,14 @@ class Trainer():
             self.logger.info("Validation will be done every {} epochs".format(self.configs.validation_epoch_frequency))
             self.logger.info("Batch size for validation:{}".format(self.configs.batch_size_validation))
         # set optimizer and lr scheduler
-        self.optimizer = self.__get_optimizer(network)
-        self.lr_scheduler = self.__get_lr_scheduler(self.optimizer)
+        self.optimizer = self.get_optimizer(network)
+        self.lr_scheduler = self.get_lr_scheduler(self.optimizer)
         self.logger.info("learning rate:{}".format(self.configs.lr))
         self.logger.info("Optimizer:{}".format(self.configs.optimizer))
         self.logger.info("Learning rate scheduler:{}".format(self.configs.lr_scheduler))
         if self.configs.warmup_epoch!=0:
             self.logger.info("Use learning rate warm up, warmup epoch:{}".format(self.configs.warmup_epoch))
-        if self.__train_from_checkpoint:
+        if self._train_from_checkpoint:
             checkpoint_file_path=self.checkpoints_path+"checkpoint_{}.pt".format(self.start_epoch-1)
             self.logger.info("Loading checkpoint from {}".format(checkpoint_file_path))
             checkpoint=torch.load(checkpoint_file_path)
@@ -291,36 +217,26 @@ class Trainer():
         self.logger.info("Training finished!")
 
     def set_configs_type(self):
-        # mandatory configs
-        self.mandatory_configs=[
-            "name",
-            "save_path",
-            "batch_size_train",
-            "epochs",
-            "lr",
-            ]
-        # optional configs with default values
-        self.default_configs={
-            "device":"cpu",
-            "random_seed":None,
-            "batch_size_validation":None,
-            "shuffle_train":True,
-            "shuffle_validation":None,
-            "num_workers_train":0,
-            "num_workers_validation":None,
-            "validation_epoch_frequency":1,
-            "optimizer":"AdamW",
-            "lr_scheduler":"cosine",
-            "final_lr":None,
-            "warmup_epoch":0,
-            "save_epoch":None,
-            "record_iteration_loss":False
-                              }
-        # configs that only allowed to be set to specific values
-        self.configs_option={
-            "optimizer":["AdamW","Adam","SGD"],
-            "lr_scheduler":["cosine","linear","constant"],
-        }
+        self.configs_handler=ConfigurationsHandler()
+        self.configs_handler.add_config_item("name",value_type=str,mandatory=True,description="Name of the training.")
+        self.configs_handler.add_config_item("save_path",value_type=str,mandatory=True,description="Path to save the training results.")
+        self.configs_handler.add_config_item("batch_size_train",mandatory=True,value_type=int,description="Batch size for training.")
+        self.configs_handler.add_config_item("epochs",mandatory=True,value_type=int,description="Number of epochs for training.")
+        self.configs_handler.add_config_item("lr",mandatory=True,value_type=float,description="Initial learning rate.")
+        self.configs_handler.add_config_item("device",default_value="cpu",value_type=str,description="Device for training.",in_func=lambda x,other_config:torch.device(x),out_func=lambda x,other_config:str(x))
+        self.configs_handler.add_config_item("random_seed",default_value_func=lambda x:int(time.time()),value_type=int,description="Random seed for training. Default is the same as batch_size_train.")# need func
+        self.configs_handler.add_config_item("batch_size_validation",default_value_func=lambda configs:configs["batch_size_train"],value_type=int,description="Batch size for validation. Default is the same as batch_size_train.")
+        self.configs_handler.add_config_item("shuffle_train",default_value=True,value_type=bool,description="Whether to shuffle the training dataset.")
+        self.configs_handler.add_config_item("shuffle_validation",default_value_func=lambda configs:configs["shuffle_train"],value_type=bool,description="Whether to shuffle the validation dataset. Default is the same as shuffle_train.")
+        self.configs_handler.add_config_item("num_workers_train",default_value=0,value_type=int,description="Number of workers for training.")
+        self.configs_handler.add_config_item("num_workers_validation",default_value_func=lambda configs:configs["num_workers_train"],value_type=int,description="Number of workers for validation. Default is the same as num_workers_train.")
+        self.configs_handler.add_config_item("validation_epoch_frequency",default_value=1,value_type=int,description="Frequency of validation.")
+        self.configs_handler.add_config_item("optimizer",default_value="AdamW",value_type=str,description="Optimizer for training.",option=["AdamW","Adam","SGD"])
+        self.configs_handler.add_config_item("lr_scheduler",default_value="cosine",value_type=str,description="Learning rate scheduler for training",option=["cosine","linear","constant"])
+        self.configs_handler.add_config_item("final_lr",default_value_func=lambda configs:configs["lr"],value_type=float,description="Final learning rate for lr_scheduler.")
+        self.configs_handler.add_config_item("warmup_epoch",default_value=0,value_type=int,description="Number of epochs for learning rate warm up.")
+        self.configs_handler.add_config_item("record_iteration_loss",default_value=False,value_type=bool,description="Whether to record iteration loss.")
+        self.configs_handler.add_config_item("save_epoch",default_value_func=lambda configs:configs["epochs"]//10,value_type=int,description="Frequency of saving checkpoints.")
 
     def train_step(self,network:torch.nn.Module,batched_data,idx_batch:int,num_batches:int,idx_epoch:int,num_epoch:int):
         '''
@@ -354,7 +270,7 @@ class Trainer():
         loss=torch.nn.functional.mse_loss(predictions,targets)
         return loss
 
-    def train_from_scratch(self,network,train_dataset,validation_dataset,path_config_file:str="",**kwargs):
+    def train_from_scratch(self,network,train_dataset,validation_dataset=None,path_config_file:str="",**kwargs):
         '''
         network: torch.nn.Module, the network to be trained, mandatory
         train_dataset: torch.utils.data.Dataset, the training dataset, mandatory
@@ -362,41 +278,13 @@ class Trainer():
         path_config_file: str, path to the yaml file of the training configurations, default is ""
         kwargs: dict, the training configurations, default is {}, will overwrite the configurations in the yaml file.
         
-        Mandatory configurations for training:
-            name: str, name of the training, mandatory
-            save_path: str, path to save the training results, mandatory
-            batch_size_train: int, batch size for training, mandatory
-            epochs: int, number of epochs for training, mandatory
-            lr: float, initial learning rate, mandatory
-        Optional Configurations for training:
-            device: cpu or cuda, device for training, default is cpu
-            random_seed: None or int, random seed for training, default is None   
-            batch_size_validation: int, batch size for validation, default is the same as batch_size_train
-            shuffle_train: bool, whether to shuffle the training dataset, default is True
-            shuffle_validation: bool, whether to shuffle the validation dataset, default is the same as shuffle_train
-            num_workers_train: int, number of workers for training, default is 0
-            num_workers_validation: int, number of workers for validation, default is the same as num_workers_train
-            validation_epoch_frequency: int, frequency of validation, default is 1  
-            optimizer: str, optimizer for training, default is AdamW
-            lr_scheduler: str, learning rate scheduler for training, default is cosine   
-            final_lr: float, final learning rate, default is the same as lr
-            warmup_epoch: int, number of epochs for learning rate warm up, default is 0
-            record_iteration_loss: bool, whether to record iteration loss, default is False
-            save_epoch: int, frequency of saving checkpoints, default is 1/10 of epochs
+        Supported training configurations can be shown through show_configs() function,
         '''
-        self.__train_from_checkpoint=False
-        configs_dict=copy.deepcopy(self.default_configs)
-        # read configs from yaml file
+        self._train_from_checkpoint=False
         if path_config_file != "":
-            with open(path_config_file,"r") as f:
-                yaml_configs=yaml.safe_load(f)
-            for key in yaml_configs.keys():
-                configs_dict[key]=yaml_configs[key]
-        # read configs from kwargs
-        for key in kwargs.keys():
-            configs_dict[key]=kwargs[key]
-        configs_dict=self.__check_configs_dict(configs_dict)
-        self.configs=GeneralDataClass(self.__prepare_config_dict_for_inoutput(configs_dict,output=False))
+            self.configs_handler.set_config_items_from_yaml(path_config_file)
+        self.configs_handler.set_config_items(**kwargs)
+        self.configs=self.configs_handler.configs()
         self.__train(network,train_dataset,validation_dataset)
 
     def train_from_checkpoint(self,project_path,train_dataset,validation_dataset,restart_epoch=None):
@@ -406,7 +294,7 @@ class Trainer():
         validation_dataset: torch.utils.data.Dataset, the validation dataset, default is None. If None, no validation will be done.
         restart_epoch: int, the epoch to restart training, default is None, which means the latest checkpoint will be used.
         '''
-        self.__train_from_checkpoint=True
+        self._train_from_checkpoint=True
         self.project_path=project_path
         # get checkpoint epoch
         if self.project_path[-1]!=os.sep:
@@ -430,10 +318,8 @@ class Trainer():
         if not os.path.exists(self.project_path+"network_structure.pt"):
             raise FileNotFoundError("No network_structure.pt found in {}".format(self.project_path))
         # read configs and network
-        with open(self.project_path+"configs.yaml","r") as f:
-            configs_dict=yaml.safe_load(f)
-            configs_dict=self.__check_configs_dict(configs_dict)
-        self.configs=GeneralDataClass(self.__prepare_config_dict_for_inoutput(configs_dict,output=False))
+        self.configs_handler.set_config_items_from_yaml(self.project_path+"configs.yaml")
+        self.configs=self.configs_handler.configs()
         network=torch.load(self.project_path+"network_structure.pt")
         self.start_epoch=restart_epoch+1
         self.__train(network,train_dataset,validation_dataset)
@@ -461,6 +347,12 @@ class Trainer():
     def event_after_validation_iteration(self,network,idx_epoch,idx_batch):
         pass
 
+    def show_config_options(self):
+        self.configs_handler.show_config_features()
+    
+    def show_current_configs(self):
+        self.configs_handler.show_config_items()
+
 class TrainedProject():
     
     def __init__(self,project_path) -> None:
@@ -486,7 +378,7 @@ class TrainedProject():
                 configs_dict=yaml.safe_load(f)
             return configs_dict
     
-    def get_network_strcuture(self,only_path=False):
+    def get_network_structure(self,only_path=False):
         if not os.path.exists(self.project_path+"network_structure.pt"):
             raise FileNotFoundError("No network_structure.pt found in {}".format(self.project_path))
         if only_path:

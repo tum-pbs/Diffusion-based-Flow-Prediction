@@ -44,17 +44,19 @@ If you find this repository useful, please cite our paper via:
 
 We provide several notebooks to show how to use our code:
 
-* generate_dataset.ipynb: How to use OpenFOAM to generate dataset in parallel.
+* [generate_dataset.ipynb](https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/generate_dataset.ipynb): How to use OpenFOAM to generate dataset in parallel.
 
-* process_dataset.ipynb (in progress): How to split the dataset according to the number of samples and simulation parameters.
+* [process_dataset.ipynb](https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/process_dataset.ipynb): How to post-process the dataset for training and analysis.
 
-* train_network.ipynb (in progress): How to train networks for diffusion models, BNNs and heteroscedastic uncertainty models.
+* [train_networks.ipynb](https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/train_networks.ipynb): How to train networks for diffusion models, BNNs and heteroscedastic uncertainty models.
 
-* sample.ipynb (in progress): How to sample from the solutions using diffusion models, BNNs and heteroscedastic uncertainty models.
+* [sample.ipynb](https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/sample.ipynb): How to sample from the solutions using diffusion models, BNNs and heteroscedastic uncertainty models.
+
+By using these note books, you will be able to reproduce the results in our manuscript step by step. You can also run any of the notebooks directly, and we have prepared the corresponding preamble file.
 
 # Datasets and Pre-trained Models
 
-The full training data set will be availalbe for download here shortly.
+The full training data set will be available for download here shortly. For now, we provide a reduced version of our dataset corresponding to the single-parameter test in our manuscript. For more details, please see `\datasets\1_parameter` and `process_dataset.ipynb`. You can also use `generate_dataset.ipynb` to generate this dataset.
 
 The pre-trained network weights can be found in `pre_trained` folder, where you can find the weights trained with different random seeds and the corresponding network configuration. You can refer to `sample.ipynb` to see the details on how to use them.
 

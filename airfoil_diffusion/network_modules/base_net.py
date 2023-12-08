@@ -1,10 +1,11 @@
 #usr/bin/python3
 from torch import nn
+import torch
 import math
 from abc import abstractmethod
 from einops.layers.torch import Rearrange
 from einops import rearrange
-from .helpers import *
+from ..helpers import *
 
 class TimeEncoding(nn.Module):
     def __init__(self, dim_encoding:int):

@@ -3,7 +3,7 @@ import os
 import torch
 import numpy as np
 from tqdm import tqdm
-from .network_modules.helpers import default
+from.helpers import default
 
 DIMLESS_MAG=[100,38.5,1.0,4.3,2.15,2.35]
 
@@ -28,8 +28,10 @@ def save_case_list_to_filedataFiles(case_list,save_name):
     os.makedirs(os.path.dirname(os.path.abspath(save_name)),exist_ok=True)
     with open(save_name,"w") as f:
         for case in case_list[:-1]:
-            f.write(os.path.abspath(case["path"]+case["file_name"])+os.linesep)
-        f.write(os.path.abspath(case_list[-1]["path"]+case_list[-1]["file_name"]))
+            f.write(case["file_name"]+os.linesep)
+            #f.write(os.path.abspath(case["path"]+case["file_name"])+os.linesep)
+        #f.write(os.path.abspath(case_list[-1]["path"]+case_list[-1]["file_name"]))
+        f.write(case_list[-1]["file_name"])
 
 def sort_case_list(case_list,key="velocity",reverse=False):
     aim_list=[case[key] for case in case_list]
@@ -202,7 +204,7 @@ class AirfoilDataset_memory(AirfoilDataset_Base):
     def __init__(self, datafiles, mag_list, data_size=128, model="normalized", max_list=None, min_list=None):
         super().__init__(datafiles, mag_list, data_size, model, max_list, min_list)
         self.datas=[]
-        for i in tqdm(range(len(self)),desc="Loading datas"):
+        for i in tqdm(range(len(self)),desc="Loading data"):
             self.datas.append(self.read_datai(i))            
         
     def __getitem__(self, idx):
@@ -217,6 +219,13 @@ class AirfoilDataset_disk(AirfoilDataset_Base):
         return datai[0:3], datai[3:], self.datafiles[idx]  
 
 def AirfoilDataset(datafiles,data_size=128,load_in_memory=True,mag_list=None,model="normalized"):
+    '''
+    datafiles: DataFiles object, which contains the information of the data files. Can be created by FolderDataFiles, FileDataFiles or DataFiles.
+    data_size: the size of the output data, default is 128
+    load_in_memory: if True, the data will be loaded into memory, otherwise the data will be loaded from disk when needed.
+    mag_list: the list of the maximum value of each field, default is DIMLESS_MAG
+    model: the model of the output data, can be "normalized", "dimless" or "real", default is "normalized"
+    '''
     if mag_list is None:
         mag_list=DIMLESS_MAG
     if load_in_memory:

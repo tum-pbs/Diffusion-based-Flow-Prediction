@@ -3,7 +3,7 @@ import torch,math
 from torch import nn
 from einops import rearrange
 from .base_net import *
-from .helpers import *
+from ..helpers import *
 
 
 class ScaledDotProductAttention(nn.Module):

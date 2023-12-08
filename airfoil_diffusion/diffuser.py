@@ -2,7 +2,6 @@
 
 import torch
 import numpy as np
-import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
@@ -21,7 +20,7 @@ class Diffuser():
         self.sqrt_one_minus_alphas_bar = torch.sqrt(self.one_minus_alphas_bar)
 
     def forward_diffusion(self, x0, t, noise):
-        xt = self.sqrt_alpha_bar[t]*x0+self.sqrt_one_minus_alpha_bar[t]*noise
+        xt = self.sqrt_alphas_bar[t]*x0+self.sqrt_one_minus_alphas_bar[t]*noise
         return xt
 
     def sample_from_noise(self, model, condition,show_progress=True):
@@ -41,14 +40,14 @@ class Diffuser():
             return x_t
 
     def DDPM_sample_step(self, x_t, t, t_pre, noise):
-        coef1 = 1/self.sqrt_alpha[t]
-        coef2 = self.beta[t]/self.sqrt_one_minus_alpha_bar[t]
-        sig = torch.sqrt(self.beta[t])*self.sqrt_one_minus_alpha_bar[t_pre]/self.sqrt_one_minus_alpha_bar[t]
+        coef1 = 1/self.sqrt_alphas[t]
+        coef2 = self.betas[t]/self.sqrt_one_minus_alphas_bar[t]
+        sig = torch.sqrt(self.betas[t])*self.sqrt_one_minus_alphas_bar[t_pre]/self.sqrt_one_minus_alphas_bar[t]
         return coef1*(x_t-coef2*noise)+sig*torch.randn_like(x_t)
 
     def show_paras(self):
-        plt.plot(self.beta[:,0,0,0].cpu(),label=r'$\beta$')
-        plt.plot(self.alpha_bar[:,0,0,0].cpu(),label=r'$\bar{\alpha}$')
+        plt.plot(self.betas[:,0,0,0].cpu(),label=r'$\beta$')
+        plt.plot(self.alphas_bar[:,0,0,0].cpu(),label=r'$\bar{\alpha}$')
         plt.legend()
         plt.xlabel('$t$')
         plt.show()
@@ -59,7 +58,7 @@ class Diffuser():
 
     def generate_parameters_from_beta(self):
         self._generate_parameters_from_beta()
-        #print('The sqrt_alpha_bar at the last step is {} , be careful if this value is not close to 0!'.format(
+        #print('The sqrt_alphas_bar at the last step is {} , be careful if this value is not close to 0!'.format(
         #    self.sqrt_alphas_bar[-1].item()))
 
     def _generate_parameters_from_beta(self):

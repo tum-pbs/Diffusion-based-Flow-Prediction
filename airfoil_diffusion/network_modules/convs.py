@@ -3,7 +3,7 @@ import torch
 from torch import nn
 from einops import reduce
 from functools import partial
-from .helpers import *
+from ..helpers import *
 from .base_net import *
 from .attentions import TimeEmbedding
 
