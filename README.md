@@ -26,7 +26,11 @@ Our work focuses on the probabilistic prediction of airfoil flows to evaluate th
 
 Other physics-based deep learning works of our group can be found at https://ge.in.tum.de/publications/.
 
+The application of diffusion models in the field of fluid dynamics is a very ascendant direction. If you are interested in this, you can refer to our other work below:
 
+* [SMDP](https://github.com/tum-pbs/SMDP): Solving Inverse Physics Problems with Score Matching.
+
+* [autoreg-pde-diffusion](https://github.com/tum-pbs/autoreg-pde-diffusion): Prediction of PDE Simulations using Autoregressive Conditional Diffusion Models (ACDMs).
 
 If you find this repository useful, please cite our paper via:
 
