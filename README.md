@@ -8,7 +8,7 @@ This repository contains a framework for uncertainty prediction of Reynolds-aver
 
 
 
-Full details can be found in our arxiv paper "Uncertainty-aware Surrogate Models for Airfoil Flow Simulations with Denoising Diffusion Probabilistic Models" : https://arxiv.org/XXXXX
+Full details can be found in our arxiv paper ["Uncertainty-aware Surrogate Models for Airfoil Flow Simulations with Denoising Diffusion Probabilistic Models"](https://arxiv.org/abs/2312.05320).
 
 Authors: Qiang Liu and Nils Thuerey
 
@@ -35,12 +35,13 @@ Other physics-based deep learning works of our group can be found at https://ge.
 If you find this repository useful, please cite our paper via:
 
 ```latex
-@misc{dbfp2023,
+@misc{dbfp,
       title={Uncertainty-aware Surrogate Models for Airfoil Flow Simulations with Denoising Diffusion Probabilistic Models}, 
-      author={Qiang Liu, Nils Thuerey},
+      author={Qiang Liu and Nils Thuerey},
       year={2023},
-      eprint={XXXXXX},
+      eprint={2312.05320},
       archivePrefix={arXiv},
+      primaryClass={physics.flu-dyn}
 }
 ```
 
