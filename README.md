@@ -22,7 +22,7 @@ Our work focuses on the probabilistic prediction of airfoil flows to evaluate th
 
 * [Deep-Flow-Prediction](https://github.com/thunil/Deep-Flow-Prediction): Airfoil flow predictions with UNet.
 
-* [Coord-Trans-Encoding](https://github.com/tum-pbs/coord-trans-encoding): High-accuracy predictions of airfoil flow with C-shaped meshes.
+* [Coord-Trans-Encoding](https://github.com/tum-pbs/coord-trans-encoding): High-accuracy predictions of airfoil flows with adaptive meshes.
 
 The application of diffusion models in the field of fluid dynamics is a very ascendant direction. If you are interested in this, you can refer to our other work below:
 
@@ -35,13 +35,12 @@ Other physics-based deep learning works of our group can be found at https://ge.
 If you find this repository useful, please cite our paper via:
 
 ```latex
-@misc{dbfp,
+@inproceedings{liu2023dbfp,
       title={Uncertainty-aware Surrogate Models for Airfoil Flow Simulations with Denoising Diffusion Probabilistic Models}, 
       author={Qiang Liu and Nils Thuerey},
       year={2023},
-      eprint={2312.05320},
-      archivePrefix={arXiv},
-      primaryClass={physics.flu-dyn}
+      booktitle={arXiv 2312.05320},
+      url={https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/}
 }
 ```
 
