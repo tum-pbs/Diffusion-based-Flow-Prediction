@@ -60,7 +60,7 @@ By using these note books, you will be able to reproduce the results in our manu
 
 # Datasets and Pre-trained Models
 
-The full training data set will be available for download here shortly. For now, we provide a reduced version of our dataset corresponding to the single-parameter test in our manuscript. For more details, please see `\datasets\1_parameter` and `process_dataset.ipynb`. You can also use `generate_dataset.ipynb` to generate this dataset.
+The full training data set is available for download at [here](https://mediatum.ub.tum.de/1731896). In this repository, we also provide a reduced version of our dataset corresponding to the single-parameter test in our manuscript. For more details, please see `\datasets\1_parameter` and `process_dataset.ipynb`. You can also use `generate_dataset.ipynb` to generate this dataset.
 
 The pre-trained network weights can be found in `pre_trained` folder, where you can find the weights trained with different random seeds and the corresponding network configuration. You can refer to `sample.ipynb` to see the details on how to use them.
 
