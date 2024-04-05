@@ -7,7 +7,7 @@ import matplotlib as mlp
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
-import collections
+from collections.abc import Sequence
 import torch
 from mpl_toolkits.axes_grid1 import ImageGrid
 from .helpers import default
@@ -37,7 +37,7 @@ class ChannelPloter():
         self.__fig_save_path="./output_figs/"
 
     def __type_transform(self,fields):
-        if isinstance(fields,collections.Sequence):
+        if isinstance(fields,Sequence):
             if isinstance(fields[0],torch.Tensor):
                 fields=[(field.to(torch.device("cpu"))).numpy() for field in fields]
                 return fields
@@ -55,7 +55,7 @@ class ChannelPloter():
                 raise Exception("Wrong input type!")       
         
     def __cat_fields(self,fields):
-        if isinstance(fields,collections.Sequence):
+        if isinstance(fields,Sequence):
             if len(fields[0].shape)==4:
                 return np.concatenate(fields,0)
             elif len(fields[0].shape) == 3:
