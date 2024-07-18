@@ -1,7 +1,7 @@
 <h1 align="center">
     Diffusion-based-Flow-Prediction
 </h1>
-<h6 align="center">Official implementation of AIAA Journal paper</h6>
+<h6 align="center">Official implementation of the AIAA Journal paper</h6>
 <h3 align="center">"Uncertainty-aware Surrogate Models for Airfoil Flow Simulations with Denoising Diffusion Probabilistic Models"</h3>
 
 <p align="center">
@@ -20,11 +20,11 @@ This repository contains a framework for **uncertainty prediction** of Reynolds-
 <h6 align="center"><a href="mailto:qiang7.liu@tum.de">Qiang Liu</a> and <a href="mailto:nils.thuerey@tum.de">Nils Thuerey</a></h6>
 
 <h6 align="center">
-    <img src="assets/TUM.svg" width="32"> Technical University of Munich
+    <img src="assets/TUM.svg" width="16"> Technical University of Munich
 </h6>
-***Abstract***: Leveraging neural networks as surrogate models for turbulence simulation is a topic of growing interest. At the same time, embodying the inherent uncertainty of simulations in the predictions of surrogate models remains very challenging. The present study makes a first attempt to use denoising diffusion probabilistic models (DDPMs) to train an uncertainty-aware surrogate model for turbulence simulations. Due to its prevalence, the simulation of flows around airfoils with various shapes, Reynolds numbers, and angles of attack is chosen as the learning objective. Our results show that DDPMs can successfully capture the whole distribution of solutions and, as a consequence, accurately estimate the uncertainty of the simulations. The performance of DDPMs is also compared with varying baselines in the form of Bayesian neura networks and heteroscedastic models. Experiments demonstrate that DDPMs outperformthe other methods regarding a variety of accuracy metrics. Besides, it offers the advantageof providing access to the complete distributions of uncertainties rather than providing a set of parameters. As such, it can yield realistic and detailed samples from the distribution of solutions. 
+***Abstract:*** Leveraging neural networks as surrogate models for turbulence simulation is a topic of growing interest. At the same time, embodying the inherent uncertainty of simulations in the predictions of surrogate models remains very challenging. The present study makes a first attempt to use denoising diffusion probabilistic models (DDPMs) to train an uncertainty-aware surrogate model for turbulence simulations. Due to its prevalence, the simulation of flows around airfoils with various shapes, Reynolds numbers, and angles of attack is chosen as the learning objective. Our results show that DDPMs can successfully capture the whole distribution of solutions and, as a consequence, accurately estimate the uncertainty of the simulations. The performance of DDPMs is also compared with varying baselines in the form of Bayesian neura networks and heteroscedastic models. Experiments demonstrate that DDPMs outperformthe other methods regarding a variety of accuracy metrics. Besides, it offers the advantageof providing access to the complete distributions of uncertainties rather than providing a set of parameters. As such, it can yield realistic and detailed samples from the distribution of solutions. 
 
-***Read from:*** [<a href="https://arc.aiaa.org/doi/10.2514/1.J063440">AIAA Journal</a>]•[<a href="https://arxiv.org/abs/2312.05320">Arxiv</a>]
+***Read from:*** [[AIAA Journal](https://arc.aiaa.org/doi/10.2514/1.J063440) ] • [[Arxiv](https://arxiv.org/abs/2312.05320)]
 
 ***Cite as:*** 
 
