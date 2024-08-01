@@ -35,8 +35,10 @@ author = {Liu, Qiang and Thuerey, Nils},
 title = {Uncertainty-Aware Surrogate Models for Airfoil Flow Simulations with Denoising Diffusion Probabilistic Models},
 journal = {AIAA Journal},
 doi = {10.2514/1.J063440},
+volume = {62},
+issue = {8},
+pages = {2192-2933}
 }
-# volume and number information is currently not available
 ```
 
 
