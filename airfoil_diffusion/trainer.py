@@ -2,7 +2,7 @@ from .trainer_base import *
 from .diffuser import *
 from bayesian_torch.models.dnn_to_bnn import get_kl_loss
 
-class TrainerSteplR(Trainer):
+class TrainerStepLr(Trainer):
     
     def __init__(self) -> None:
         super().__init__()
@@ -29,7 +29,7 @@ class TrainerSteplR(Trainer):
         if not self._train_from_checkpoint:
             network.save_current_configs(self.project_path+"configs_network.yaml")
 
-class DiffusionTrainer(TrainerSteplR):
+class DiffusionTrainer(TrainerStepLr):
     
     def __init__(self) -> None:
         super().__init__()
@@ -53,7 +53,7 @@ class DiffusionTrainer(TrainerSteplR):
         loss=torch.nn.functional.mse_loss(predicted_noise, noise)
         return loss
 
-class BNNTrainer(TrainerSteplR):
+class BNNTrainer(TrainerStepLr):
     
     def __init__(self) -> None:
         super().__init__()
@@ -72,7 +72,7 @@ class BNNTrainer(TrainerSteplR):
         self.recorder.add_scalar("Seprate_train_loss/kl_loss",klloss.item(),(idx_epoch-1)*num_batches+idx_batch)
         return mseloss+klloss
 
-class HeteroscedasticTrainer(TrainerSteplR):
+class HeteroscedasticTrainer(TrainerStepLr):
     
     def __init__(self) -> None:
         super().__init__()
