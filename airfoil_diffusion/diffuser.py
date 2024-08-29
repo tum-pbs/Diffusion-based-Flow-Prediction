@@ -93,8 +93,6 @@ class sigParamsDiffuser(Diffuser):
         self.beta_source = torch.sigmoid(
             torch.linspace(-6, 6, self.steps))*(beta_max-beta_min)+beta_min
         self.generate_parameters_from_beta()
-        self.update_parameters(beta_min, beta_max)
-
 
 class Cos2ParamsDiffuser(Diffuser):
 
