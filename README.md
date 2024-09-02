@@ -1,3 +1,4 @@
+> ⭐⭐⭐ *Update: [Flow matching](https://arxiv.org/abs/2210.02747) method is now available to provide faster inference! Check [flow_matching.ipynb](https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/flow_matching.ipynb) for details.* ⭐⭐⭐
 <h1 align="center">
     Diffusion-based-Flow-Prediction
 </h1>
@@ -7,6 +8,7 @@
 <p align="center">
   [<a href="https://arc.aiaa.org/doi/10.2514/1.J063440">AIAA Journal</a>]•[<a href="https://arxiv.org/abs/2312.05320">Arxiv</a>]•[<a href=https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/assets/ICML_Poster.pdf>ICML Workshop Poster</a>]•[Blog (coming soon)]
 </p>
+
 <img src="./assets/main.svg" style="zoom: 50%;" />
 
 This repository contains a framework for **uncertainty prediction** of Reynolds-averaged Navier-Stokes flows around airfoils using **Denoising Diffusion Probabilistic Models (DDPM)**. It features code for generating a dataset evaluating the simulation uncertainty induced by simulation parameters, and training code for diffusion models, in addition to baselines using **Bayesian neural networks (BNNs)** and **heteroscedastic uncertainty models**.
@@ -56,6 +58,8 @@ We provide several notebooks to show how to use our code:
 * [train_networks.ipynb](https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/train_networks.ipynb): How to train networks for diffusion models, BNNs and heteroscedastic uncertainty models.
 
 * [sample.ipynb](https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/sample.ipynb): How to sample from the solutions using diffusion models, BNNs and heteroscedastic uncertainty models.
+
+* [flow_matching.ipynb](https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/flow_matching.ipynb) (⭐NEW⭐): How to use flow matching to solve the airfoil flow problems.
 
 By using these note books, you will be able to reproduce the results in our manuscript step by step. You can also run any of the notebooks directly, and we have prepared the corresponding preamble file.
 
