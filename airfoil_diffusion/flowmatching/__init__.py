@@ -57,8 +57,8 @@ class ConditionalFlowMatcher(ABC):
 
     def sample(
         self,
-        x_0:torch.tensor,
         network:nn.Module,
+        x_0:torch.tensor,
         solver_config:Union[FixedStepConfig,AdaptiveStepConfig],
         full_trajectory:bool=False,
         *args,
@@ -68,8 +68,8 @@ class ConditionalFlowMatcher(ABC):
         Generate samples from the flow
 
         Args:
-            x_0 (torch.tensor): The initial samples. The first dimension should be the batch size
             network (nn.Module): A neural network that takes $x_t$ and $t$ as input and returns the conditioned u_t field
+            x_0 (torch.tensor): The initial samples. The first dimension should be the batch size
             solver_config (Union[FixedStepConfig,AdaptiveStepConfig]): The configuration for the ODE solver
             full_trajectory (bool): If True, the full trajectory will be returned. Default to False
             *args: Additional arguments for the neural network
@@ -118,8 +118,8 @@ class ConditionalFlowMatcher(ABC):
         
         """
         return self.sample(
-            x_0=x_0,
             network=network,
+            x_0=x_0,
             solver_config=FixedStepConfig(solver=solver,dt=1/num_steps),
             full_trajectory=full_trajectory,
             *args,
@@ -128,8 +128,8 @@ class ConditionalFlowMatcher(ABC):
     
     def adaptive_sample(
         self,
-        x_0:torch.tensor,
         network:nn.Module,
+        x_0:torch.tensor,
         solver:ODESolver=ODESolver.DOPRI45,
         atol:float=1e-6,
         rtol:float=1e-5,
@@ -154,8 +154,8 @@ class ConditionalFlowMatcher(ABC):
             torch.tensor: The samples from the flow
         """
         return self.sample(
-            x_0=x_0,
             network=network,
+            x_0=x_0,
             solver_config=AdaptiveStepConfig(solver=solver,atol=atol,rtol=rtol),
             full_trajectory=full_trajectory,
             *args,
