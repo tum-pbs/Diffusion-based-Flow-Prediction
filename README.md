@@ -1,11 +1,13 @@
 
 <center>⭐⭐⭐ Update: Flow matching method is now available to provide faster inference!⭐⭐⭐ </center>
 
+
 <center>⭐⭐ Check our <a href="https://arxiv.org/abs/2312.05320">updated manuscrip</a> for details.⭐⭐ </center>
+
 
 <center>⭐ Or have a try with <a href="https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/flow_matching.ipynb">flow_matching.ipynb</a>.⭐ </center>
 
-<img src="./assets/flowmatching_diffusion_20_git.png" alt="50" style="zoom:50%;" />
+<img src="./assets/flowmatching_diffusion_20_git.png" alt="50" style="zoom:25%;" />
 
 ---
 
