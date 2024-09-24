@@ -78,19 +78,20 @@ class ConditionalFlowMatcher(ABC):
         Returns:
             torch.tensor: The samples from the flow
         """
-        def wrapper(t,x):
-            return network(x,
-                           t*torch.ones((x.shape[0],)).to(x_0.device),
-                           *args,
-                           **kwargs)
-        return odeint(
-            f=wrapper,
-            x_0=x_0,
-            t_0=0.,
-            t_1=1.,
-            solver_config=solver_config,
-            record_trajectory=full_trajectory
-        )
+        with torch.no_grad():
+            def wrapper(t,x):
+                return network(x,
+                            t*torch.ones((x.shape[0],)).to(x_0.device),
+                            *args,
+                            **kwargs)
+            return odeint(
+                f=wrapper,
+                x_0=x_0,
+                t_0=0.,
+                t_1=1.,
+                solver_config=solver_config,
+                record_trajectory=full_trajectory
+            )
 
     def fixed_step_sample(
         self,

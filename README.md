@@ -1,4 +1,14 @@
-> ⭐⭐⭐ *Update: [Flow matching](https://arxiv.org/abs/2210.02747) method is now available to provide faster inference! Check [flow_matching.ipynb](https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/flow_matching.ipynb) for details.* ⭐⭐⭐
+
+<center>⭐⭐⭐ Update: Flow matching method is now available to provide faster inference!⭐⭐⭐ </center>
+
+<center>⭐⭐ Check our <a href="https://arxiv.org/abs/2312.05320">updated manuscrip</a> for details.⭐⭐ </center>
+
+<center>⭐ Or have a try with <a href="https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/flow_matching.ipynb">flow_matching.ipynb</a>.⭐ </center>
+
+<img src="./assets/flowmatching_diffusion_20_git.png" alt="50" style="zoom:50%;" />
+
+---
+
 <h1 align="center">
     Diffusion-based-Flow-Prediction
 </h1>
@@ -8,7 +18,6 @@
 <p align="center">
   [<a href="https://arc.aiaa.org/doi/10.2514/1.J063440">AIAA Journal</a>]•[<a href="https://arxiv.org/abs/2312.05320">Arxiv</a>]•[<a href=https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/assets/ICML_Poster.pdf>ICML Workshop Poster</a>]•[Blog (coming soon)]
 </p>
-
 <img src="./assets/main.svg" style="zoom: 50%;" />
 
 This repository contains a framework for **uncertainty prediction** of Reynolds-averaged Navier-Stokes flows around airfoils using **Denoising Diffusion Probabilistic Models (DDPM)**. It features code for generating a dataset evaluating the simulation uncertainty induced by simulation parameters, and training code for diffusion models, in addition to baselines using **Bayesian neural networks (BNNs)** and **heteroscedastic uncertainty models**.
