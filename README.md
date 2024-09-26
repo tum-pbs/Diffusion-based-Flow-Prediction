@@ -1,6 +1,6 @@
 <img src="./assets/flowmatching_diffusion_20_git.svg" />
 
-<h5 align="center">Check our <a href="https://arxiv.org/abs/2312.05320">updated manuscript</a> or have a try by yourself with <a href="https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/flow_matching.ipynb">flow_matching.ipynb</a>.</h5>
+<h5 align="center">Check out our <a href="https://arxiv.org/abs/2312.05320">updated manuscript</a>, or try it for yourself with <a href="https://github.com/tum-pbs/Diffusion-based-Flow-Prediction/blob/main/flow_matching.ipynb">flow_matching.ipynb</a>.</h5>
 
 ---
 
