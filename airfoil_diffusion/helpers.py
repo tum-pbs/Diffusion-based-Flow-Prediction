@@ -67,15 +67,15 @@ class ConfigurationsHandler():
         if mandatory and (default_value is not None or default_value_func is not None):
             raise Exception("Default value or default value func must not be set for mandatory configuration.")
         if default_value is not None and type(default_value)!=value_type:
-            raise Exception("Default value must be {}, but find {}.".format(value_type,type(default_value)))
+            raise Exception("Default value must be {}, but found {}.".format(value_type,type(default_value)))
         if option is not None:
             if type(option)!=list:
-                raise Exception("Option must be list, but find {}.".format(type(option)))
+                raise Exception("Option must be list, but found {}.".format(type(option)))
             if len(option)==0:
                 raise Exception("Option must not be empty.")
             for item in option:
                 if type(item)!=value_type:
-                    raise Exception("Option must be list of {}, but find {}.".format(value_type,type(item)))
+                    raise Exception("Option must be list of {}, but found {}.".format(value_type,type(item)))
         self.__configs_feature[name]={
             "default_value_func":default_value_func, #default_value_func must be a function with one parameter, which is the current configures
             "mandatory":mandatory,
@@ -109,9 +109,9 @@ class ConfigurationsHandler():
             if key not in self.__configs_feature.keys():
                 raise Exception("{} is not a supported configuration.".format(key))
             if self.__configs_feature[key]["value_type"] is not None and type(kwargs[key])!=self.__configs_feature[key]["value_type"]:
-                raise Exception("{} must be {}, but find {}.".format(key,self.__configs_feature[key]["value_type"],type(kwargs[key])))
+                raise Exception("{} must be {}, but found {}.".format(key,self.__configs_feature[key]["value_type"],type(kwargs[key])))
             if self.__configs_feature[key]["option"] is not None and kwargs[key] not in self.__configs_feature[key]["option"]:
-                raise Exception("{} must be one of {}, but find {}.".format(key,self.__configs_feature[key]["option"],kwargs[key]))
+                raise Exception("{} must be one of {}, but found {}.".format(key,self.__configs_feature[key]["option"],kwargs[key]))
             self.__configs.set(key,kwargs[key])
             self.__configs_feature[key]["in_func_ran"]=False
             self.__configs_feature[key]["out_func_ran"]=False
